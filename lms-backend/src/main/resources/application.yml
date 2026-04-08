@@ -1,0 +1,39 @@
+# LMS学习管理系统配置文件
+# 服务器配置
+server:
+  port: 8080
+
+# 数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lms?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: update  # 自动创建/更新表结构
+    show-sql: true     # 显示SQL语句
+    properties:
+      hibernate:
+        format_sql: true  # 格式化SQL
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  # Jackson配置
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# JWT配置
+jwt:
+  secret: lms-secret-key-2024-learning-management-system-jwt-token
+  expiration: 7200000  # 2小时(毫秒)
+
+# 日志配置
+logging:
+  level:
+    com.lms: info
+    org.springframework.security: info
+    org.hibernate.SQL: debug
