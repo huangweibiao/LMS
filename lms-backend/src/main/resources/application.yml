@@ -1,25 +1,34 @@
 # LMS学习管理系统配置文件
 # 服务器配置
 server:
-  port: 8080
+  port: 8880
 
 # 数据源配置
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/lms?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/lms_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
     username: root
-    password: root
+    password: rootadmin
 
-  # JPA配置
+  # 数据库自动初始化配置
+  sql:
+    init:
+      # 启动时自动初始化数据库
+      mode: always
+      # SQL 脚本编码
+      encoding: UTF-8
+      # 继续执行，遇到错误不中断
+      continue-on-error: true
+
+# JPA配置
   jpa:
     hibernate:
-      ddl-auto: update  # 自动创建/更新表结构
-    show-sql: true     # 显示SQL语句
+      ddl-auto: update  # 首次运行使用 update 创建表，之后可改为 validate
+    show-sql: false      # 关闭SQL显示
     properties:
       hibernate:
         format_sql: true  # 格式化SQL
-        dialect: org.hibernate.dialect.MySQLDialect
 
   # Jackson配置
   jackson:
@@ -36,4 +45,3 @@ logging:
   level:
     com.lms: info
     org.springframework.security: info
-    org.hibernate.SQL: debug

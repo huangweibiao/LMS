@@ -1,8 +1,8 @@
 -- LMS学习管理系统数据库初始化脚本
 -- 创建数据库(如果不存在)
-CREATE DATABASE IF NOT EXISTS lms DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS lms_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE lms;
+USE lms_db;
 
 -- ========================================
 -- 用户相关表
@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS sys_user_role (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '关联ID',
     user_id BIGINT NOT NULL COMMENT '用户ID',
     role_id BIGINT NOT NULL COMMENT '角色ID',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     UNIQUE KEY uk_user_role (user_id, role_id),
     CONSTRAINT fk_ur_user FOREIGN KEY (user_id) REFERENCES sys_user(id) ON DELETE CASCADE,
     CONSTRAINT fk_ur_role FOREIGN KEY (role_id) REFERENCES sys_role(id) ON DELETE CASCADE
@@ -440,32 +441,32 @@ CREATE TABLE IF NOT EXISTS sys_config (
 -- ========================================
 
 -- 初始化角色数据
-INSERT INTO sys_role (role_name, role_code, description, status) VALUES
-('管理员', 'admin', '系统管理员', 1),
-('讲师', 'teacher', '课程讲师', 1),
-('学员', 'student', '普通学员', 1);
+INSERT IGNORE INTO sys_role (role_name, role_code, description, status, create_time) VALUES
+('管理员', 'admin', '系统管理员', 1, NOW()),
+('讲师', 'teacher', '课程讲师', 1, NOW()),
+('学员', 'student', '普通学员', 1, NOW());
 
--- 初始化管理员账号 (密码: admin123, BCrypt加密)
-INSERT INTO sys_user (username, password, real_name, email, role, status) VALUES
-('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '系统管理员', 'admin@lms.com', 'admin', 1),
-('teacher', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '张老师', 'teacher@lms.com', 'teacher', 1),
-('student', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '李同学', 'student@lms.com', 'student', 1);
+-- 初始化管理员账号 (密码: admin123)
+INSERT IGNORE INTO sys_user (username, password, real_name, email, role, status, create_time, update_time) VALUES
+('admin', '$2a$10$vd02FvFkIddy9lxWuQw8jOaIc7f7XHOJSd3ElEYlUvC7.EAbtLd6i', '系统管理员', 'admin@lms.com', 'ADMIN', 1, NOW(), NOW()),
+('teacher', '$2a$10$vd02FvFkIddy9lxWuQw8jOaIc7f7XHOJSd3ElEYlUvC7.EAbtLd6i', '张老师', 'teacher@lms.com', 'TEACHER', 1, NOW(), NOW()),
+('student', '$2a$10$vd02FvFkIddy9lxWuQw8jOaIc7f7XHOJSd3ElEYlUvC7.EAbtLd6i', '李同学', 'student@lms.com', 'STUDENT', 1, NOW(), NOW());
 
 -- 初始化用户角色关联
-INSERT INTO sys_user_role (user_id, role_id) VALUES
+INSERT IGNORE INTO sys_user_role (user_id, role_id) VALUES
 (1, 1),
 (2, 2),
 (3, 3);
 
 -- 初始化课程分类
-INSERT INTO course_category (name, parent_id, sort_order, status) VALUES
+INSERT IGNORE INTO course_category (name, parent_id, sort_order, status) VALUES
 ('编程技术', 0, 1, 1),
 ('前端开发', 1, 1, 1),
 ('后端开发', 1, 2, 1),
 ('数据科学', 0, 2, 1);
 
 -- 初始化系统配置
-INSERT INTO sys_config (config_key, config_value, config_type, description) VALUES
+INSERT IGNORE INTO sys_config (config_key, config_value, config_type, description) VALUES
 ('system.name', 'LMS学习管理系统', 'system', '系统名称'),
 ('system.version', '1.0.0', 'system', '系统版本'),
 ('jwt.expiration', '7200000', 'security', 'JWT过期时间(毫秒)');

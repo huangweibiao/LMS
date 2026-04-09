@@ -30,12 +30,12 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     const res = response.data
-    
+
     // 如果响应成功
     if (res.code === 200) {
-      return res
+      return res.data  // 返回data部分
     }
-    
+
     // 处理业务错误
     ElMessage.error(res.message || '请求失败')
     return Promise.reject(new Error(res.message || '请求失败'))
@@ -78,7 +78,7 @@ const request = {
   },
   
   post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    return apiClient.post(url, data, config).then(res => res.data)
+    return apiClient.post(url, data, config) as Promise<T>
   },
   
   put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {

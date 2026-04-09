@@ -45,29 +45,37 @@ public class AuthService {
         // 查询用户
         SysUser user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BusinessException(401, "用户名或密码错误"));
-        
+
         // 验证密码
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        boolean matches = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        System.out.println("=== LOGIN DEBUG ===");
+        System.out.println("Username: " + request.getUsername());
+        System.out.println("Input password: " + request.getPassword());
+        System.out.println("Stored hash: " + user.getPassword());
+        System.out.println("Matches: " + matches);
+        System.out.println("====================");
+
+        if (!matches) {
             throw new BusinessException(401, "用户名或密码错误");
         }
-        
+
         // 检查用户状态
         if (user.getStatus() != 1) {
             throw new BusinessException(403, "用户已被禁用");
         }
-        
+
         // 生成JWT令牌
         String token = jwtUtil.generateToken(user.getId(), user.getUsername());
-        
+
         // 更新最后登录时间
         user.setLastLoginTime(new Date());
         userRepository.save(user);
-        
+
         // 返回登录响应
         LoginResponse response = new LoginResponse();
         response.setToken(token);
         response.setUser(convertToResponse(user));
-        
+
         return response;
     }
     

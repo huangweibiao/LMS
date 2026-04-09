@@ -11,15 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LmsApplication {
 
-    /**
-     * 应用程序入口点
-     * @param args 命令行参数
-     */
     public static void main(String[] args) {
         SpringApplication.run(LmsApplication.class, args);
         System.out.println("========================================");
         System.out.println("LMS学习管理系统启动成功!");
-        System.out.println("访问地址: http://localhost:8080");
+        System.out.println("访问地址: http://localhost:8880");
         System.out.println("========================================");
     }
 }

@@ -62,7 +62,18 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/api/auth/**",
                     "/api/public/**",
-                    "/error"
+                    "/error",
+                    "/",
+                    "/index.html",
+                    "/**/*.css",
+                    "/**/*.js",
+                    "/**/*.ico",
+                    "/**/*.png",
+                    "/**/*.jpg",
+                    "/**/*.svg",
+                    "/**/*.woff",
+                    "/**/*.woff2",
+                    "/**/*.ttf"
                 ).permitAll()
                 // 其他请求需要认证
                 .anyRequest().authenticated()
